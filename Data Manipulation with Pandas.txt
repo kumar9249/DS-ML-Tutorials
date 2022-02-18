@@ -1,0 +1,561 @@
+Data Manipulation with Pandas
+
+import pandas as pd
+
+Series, DataFrame and Index
+
+Series object- A Pandas Series is a one-dimensional array of indexed data.
+In: data = pd.Series([0.25, 0.5, 0.75, 1.0])
+    data
+Out: 0 0.25
+     1 0.50
+     2 0.75
+	 3 1.00
+	 dtype: float64
+	 
+In: data.values
+Out: array([ 0.25, 0.5 , 0.75, 1. ])
+In: data.index
+Out: RangeIndex(start=0, stop=4, step=1)
+
+data[1] = 0.5 # Data can be accessed by the associated index.
+
+In: data = pd.Series([0.25, 0.5, 0.75, 1.0],
+               index=['a', 'b', 'c', 'd'])
+    data
+Out: a 0.25
+	 b 0.50
+	 c 0.75
+	 d 1.00
+	 dtype: float64
+	 
+data['c'] = 0.75 # Data can be accessed by the associated index.
+
+In: population_dict = {'California': 38332521,
+						'Texas': 26448193,
+						'New York': 19651127,
+						'Florida': 19552860,
+						'Illinois': 12882135}
+	population = pd.Series(population_dict, name='population')
+	population
+Out: 
+				 population
+	 California  38332521
+	 Florida     19552860
+	 Illinois 	 12882135
+	 New York 	 19651127
+	 Texas 		 26448193
+	 dtype: int64
+
+population['California'] = 38332521 # Data can be accessed by the associated index.
+
+Slicing-
+In: population['California':'Illinois']
+Out: California  38332521
+	 Florida     19552860
+	 Illinois    12882135
+	 dtype: int64
+	 
+In: pd.Series(5, index=[100, 200, 300])
+Out: 100 5
+	 200 5
+	 300 5
+	 dtype: int64
+
+DataFrame object-
+A Column is referred as a Feature, A Row is referred as an Observation and Column name is referred as the Attribute.
+
+In: pd.DataFrame(population, columns=['population'])
+Out:           
+                population
+    California  38332521
+	Florida     19552860
+	Illinois    12882135
+	New York    19651127
+	Texas       26448193
+
+In: area = pd.Series({'California': 423967, 'Texas': 695662,
+					  'New York': 141297, 'Florida': 170312,
+					  'Illinois': 149995})
+	population = pd.Series({'California': 38332521, 'Texas': 26448193,
+							'New York': 19651127, 'Florida': 19552860,
+							'Illinois': 12882135})
+	data = pd.DataFrame({'area':area, 'population':population})
+
+Out: 
+			area    population
+California  423967  38332521
+Florida     170312  19552860
+Illinois    149995  12882135
+New York    141297  19651127
+Texas       695662  26448193
+
+In: brics = {'country': ['Brazil', 'Russia', 'India', 'China', 'Africa'],
+         'area': [200, 1431, 1252, 1357, 52]}
+	df = pd.DataFrame(brics)
+Out: 
+		country	 area
+	0	Brazil	 200
+	1   Russia   1431
+	2	India    1252
+	3	China    1357
+	4	Africa   52
+
+In: df.columns
+Out: Index(['country', 'area'], dtype='object')
+In: df.index 
+Out: Index([0, 1, 2, 3, 4], dtype='object')
+
+In: df.index = ["BR", "RU", "IN", "CH", "SA"]
+Out: 
+    	country	 area
+	BR	Brazil	 200
+	RU  Russia   1431
+	IN	India    1252
+	CH	China    1357
+	SA	Africa   52
+
+In: pd.DataFrame([[2,3], [1,4], [5,7]]
+                 index = ['A', 'B', 'C']
+				 column = ['x', 'y'])
+Out:
+		x   y
+	A	2   3
+	B	1	4
+	C	5	7
+
+Index object-
+
+Data selection in Series- 
+Data can be accessed by the associated index.
+data[1] = 0.5 
+data['c'] = 0.75 
+
+Also, data.keys() = Index([0, 1, 2, 3], dtype='object')
+      list(data.items()) = [('a', 0.25), ('b', 0.50), ('c', 0.75), ('d', 1.00)]
+
+Slicing, Masking and Fancy indexing is allowed.
+
+Indexers - data.loc(1) = 0.25 # Indexing starts from 1
+		   data.iloc(1) = 0.50 # Indexing starts from zero
+		   
+Data selection in DataFrame-
+Data can be accessed through the associated column name.
+df['country'] = 0  Brazil
+				1  Russia
+				2  India
+				3  China
+				4  Africa
+
+Data can be accessed by the associated index.
+df[0:4] = 
+			country	 area
+		0	Brazil	 200
+		1   Russia   1431
+		2	India    1252
+		3	China    1357
+		4	Africa   52
+
+
+Note: df['col'] access column as a series. 
+	  df[['col']] access column as a dataframe.
+
+df.values
+
+Indexers- df.loc[:'Illinois', :'population']
+		  df.iloc[:3, :2]
+		  df.ix[:3, :population]
+
+Out: 
+				area    population
+	California  423967  38332521
+	Florida     170312  19552860
+	Illinois    149995  12882135
+
+obj.ix[val] Selects single row of subset of rows from the DataFrame.
+obj.ix[:, val] Selects single column of subset of columns.
+obj.ix[val1, val2] Select both rows and columns.
+
+Operating on Data in Pandas-
+
++  |  add()
+-  |  sub(), subtract()
+*  |  mul(), multiply()
+/  |  truediv(), div(), divide()
+// |  floordiv()
+%  |  mod()
+** |  pow()
+
+df.head(n)- Display the first 'n' rows of the dataframe
+df.tail(n)- Display the last 'n' rows of the dataframe
+df.sample(n) - Display 'n' random rows from the dataframe
+Note: The default value of 'n' is 5
+
+df.shape()- Returns (rows, columns)
+df.dtypes()- Returns the data type of each column
+
+df.select_dtypes(include='number'/'category'/'datetime' , exclude= ) - Returns a subset of columns based on their type
+# This function can be used to seperate numerical & categorical features of a dataset 
+df.transpose()- Returns a new transpose dataframe
+
+df.info()- Returns:
+					Display the top & bottom 30 rows of the dataframe
+					No. of rows and colums
+					No. of non-null values
+					Type of data in each column
+					Memory occupied by the dataframe
+					
+df.describe()- Returns:
+						No. of items in column as count
+						Average value of column as mean
+						Standard deviation of column as std
+						Minimum & Maximum values as min and max
+						Boundary of each quartile
+include = "all" - provide full summary statistics
+
+Statistical operations-
+
+df['col'].count()- Count the total number of items of a column
+df['col'].first() & df['col'].last()- Returns the first and last item of a column
+df['col'].mean()- Returns the mean value of a column
+df['col'].median()- Returns the median value of a column
+df['col'].min()- Returns the minimum value of a column
+df['col'].max()- Returns th maximum value of a column
+df['col'].std()- Returns the standard deviation of a column
+df['col'].var()- Returns the variance of a column
+df['col'].mad()- Returns the mean absolute deviation of a column
+df['col'].prod()- Returns the product of all items of a column
+df['col'].sum()- Returns the sum of all items of a column
+df['col'].quantile(x)- Returns a series of x% values of a column
+
+Note: In Pandas, NaN values are excluded unless the entire row or column is NaN. This can be disabled using the skipna=False option.
+
+df.idxmin()- Returns the index value for minimum value
+df.idxmax()- Returns the index value for maximum value
+
+df['col'].where()-
+df['col'].isin()-
+
+df['col'].cumsum()- Computes cumulative sum of values
+df['col'].cumprod()- Computes cumulative product of values
+
+df['col'].kurt()- Sample kurtosis (4th moment) of values
+df['col'].skew()- Sample skewness (3rd moment) of values 
+
+df['col'].value_counts()- Returns the frequency of each variable in a column
+df['col'].unique()- Returns an array of unique values of a column
+df['col'].nunique() - Returns the count of unique values of a column
+
+Note: A level number or name shall be passed as level= in data aggregation methods for operationg on hierarchically indexed data.
+
+Correlation & Covariance-
+df.pct_change()- Computes percent changes
+
+To find the correlation/covariance of the overlapping, non-NaN, aligned-by-index values in two Series.
+df['col1'].corr(df['col2'])-
+df['col1'].cov(df['col2'])-
+
+To compute a full correlation or covariance matrix as a DataFrame.
+df.corr()
+df.cov()
+ 
+corrwith() method is used to compute pairwise correlations between a DataFrame’s columns or rows with another Series or DataFrame.
+
+Passing a Series returns a Series with the correlation value computed for each column
+df.corrwith(df['col'])
+Passing a DataFrame computes the correlations of matching column names 
+df.corrwith(df)
+
+Data Formatting-
+df.rename(index={"old-name":"new-name"}, columns={"old-name":"new-name"})- Renaming a column & index
+df['col'].astype("int")- Converts the column type into int64
+df['col'].replace(old-value, new-value) 
+# For replacing multiple values at once use ([ , ], ); For different replacement for each value use ([ 1st old, 2nd old], [1st new, 2nd new]) 
+
+df.set_index('col')- Set a column as the index of a dataframe
+df.reset_index()- Resets the index of a dataframe
+df.reindex([], columns=[])- Rearranges the data according to the new index, introducing missing values if any index values were not already present.
+
+Sorting-
+df.sort_index(by= , axis= , ascending= )- Sorts a dataframe by row index
+df.sort_values(by='col', ascending=False, inplace=True)- Sorts a dataframe by one or more columns
+df.sort_level() 
+
+Note: The parameter inplace=True writes the result back into the same dataframe.
+
+Dropping entries-
+df.drop() # Index values can be deleted from either axis
+
+df.drop_duplicates(subset=['col'])- # Remove duplicate rows
+By default, it keeps the first observed value combination.
+Passing take_last=True will return the last one.
+
+del df['col']- Drops a column
+
+Handling Missing Data- 
+None & NaN are treated as null values
+isnull() & notnull() # Detecting null values
+
+df['col'].isnull().sum() # Count null values in a column
+df['col'].notnull().sum() # Count not null values in a column
+
+Dropping null values-
+df.dropna() axis=0 # Drops an entire row having a null value
+			axis=1 # Drops an entire row having a null value
+			subset=['col'] # Column with missing values
+			how='any' # By default, any row or column containing a null value will be dropped
+			how='all' # It will only drop rows/columns that are all null values
+			thresh=  # specify a minimum number of non-null values for the row/column to be kept
+
+Filling null values-
+df['col'].fillna(x) axis=0 # Fills the null values of an entire row with x 
+					axis=1 # Fills the null values of an entire column with x
+					method=ffill # A forward-fill propagates the previous value forward
+					method=bfill # A backward-fill propagates the previous value backward
+					limit= # For forward and backward filling, maximum number of consecutive periods to fill
+
+As an alternative, df['col'].replace(np.nan, new-value) can also be used.
+
+Importing Data in Pandas-
+Format- .csv (Comma Seperated Values)
+
+Reading Data-
+pd.read_csv(loc)
+loc = path\filename.extension 
+
+pd.read_table() # A delimitor can be specified using the sep= parameter
+
+header=  # Row number to use as column names. Must be specified as None if there is no header
+names=[] # Assign column names
+index_col=  # To specify a column as the index of the dataframe
+sep=' '  # To specify the seperator
+skiprows=  # Number of rows at beginning of file to skip
+nrows=  # Number of rows to read from beginning of file
+skip_footer=  # Number of lines to ignore at end of file
+
+Writing Data-
+df.to_csv(loc)
+
+sys.stdout # So it just prints the text result
+na_rep=' ' # To specify a representation for missing values
+index=False, header=False # To exclude row & column labels
+cols=[] # To subset output data by columns
+ 
+MultiIndex-
+
+In: df = pd.DataFrame(np.arange(12).reshape((4, 3)),
+					  index=[['a', 'a', 'b', 'b'], [1, 2, 1, 2]],
+					  columns=[['Ohio', 'Ohio', 'Colorado'], ['Green', 'Red', 'Green']])
+Out: 
+			Ohio 	   Colorado
+			Green Red   Green
+	a   1    0    1 	 2
+		2    3    4      5
+	b   1    6    7 	 8
+		2    9    10     11
+
+df.index = [('a', 1), ('a', 2), ('b', 1), ('b', 2)]
+df.columns = [('Ohio', 'Green'), ('Ohio', 'Red'), ('Colorado', 'Green')]
+
+In: df.index.names=['year', 'visit']
+	df.columns.names=['state', 'color']
+Out: 
+	state		 Ohio 	   Colorado
+	color	     Green Red   Green
+	year visit		
+	a      1      0    1 	  2
+		   2      3    4      5
+	b      1      6    7 	  8
+		   2      9    10     11
+		   
+pd.MultiIndex.from_arrays([['a', 'a', 'b', 'b'], [1, 2, 1, 2]], names=[['Ohio', 'Ohio', 'Colorado'], ['Green', 'Red', 'Green']])
+
+pd.MultiIndex.from_tuples([('a', 1), ('a', 2), ('b', 1), ('b', 2)], names=[('Ohio', 'Green'), ('Ohio', 'Red'), ('Colorado', 'Green')])
+
+df.stack() = 					df.unstack() =    
+California  2000 33871648	    			  2000     2010  
+			2010 37253956	 	California  33871648 37253956
+New York    2000 18976457		New York    18976457 19378102
+			2010 19378102 		Texas       20851820 25145561	
+Texas 		2000 20851820
+			2010 25145561
+
+By default, the innermost level is stacked or unstacked. You can stack/unstack a different level by passing a level number or name.
+
+Merging of dataframes-
+By default, merge does an inner join
+pd.merge(df1, df2) or df1.merge(df2)
+
+on=  # Specify which column to join on
+how=  # Specify the type of join
+left_on= , right_on=  # If the column names are different in each dataframe
+left_index=True # Use row index in left as its join key
+right_index=True # Use row index in right as its join key
+sort # Sort merged data lexicographically by join keys; True by default.
+
+Type of joins-
+inner # intersection
+outer # union
+left , right
+
+One-to-one, Many-to-one, Many-to-many
+
+Note: If a non-key column exists in both the dataframes, would appear as col_x, col_y in the result. 
+You can also specify Suffixes=[" ", " "] to be used insted of _x, _y
+
+Concatenating dataframes-
+pd.concat([df1, df2])
+
+axis=1 # For column-wise concatenation; 0 by default
+keys=[] # Labels for each dataframe or MultiIndex keys for row-wise concatenation
+join=outer/inner # outer by default
+ignore_index=True # A new integer index is created for the result
+
+Note: In the case of combining Series along axis=1, the keys become the DataFrame column headers.
+
+df1.append(df2)
+
+Binning of Data-
+df['ages'] = [20, 22, 25, 27, 21, 23, 37, 31, 61, 45, 41, 32]
+bins = [18, 25, 35, 60, 100] # List of bin edge values
+
+In: df['category'] = pd.cut(df['ages'], bins)
+Out: array([(18, 25], (18, 25], (18, 25], (25, 35], (18, 25], (18, 25],
+            (35, 60], (25, 35], (60, 100], (35, 60], (35, 60], (25, 35]], dtype=object)
+By specifying right=False 
+Out: array([[18, 26), [18, 26), [18, 26), [26, 36), [18, 26), [18, 26),
+            [36, 61), [26, 36), [61, 100), [36, 61), [36, 61), [26, 36)], dtype=object)
+
+In: df['category'].labels
+Out: array([0, 0, 0, 1, 0, 0, 2, 1, 3, 2, 2, 1])
+Labels can be specified as labels=['Youth', 'Adult', 'MiddleAged', 'Senior']
+
+In: df['category'].levels
+Out: Index([(18, 25], (25, 35], (35, 60], (60, 100]], dtype=object)
+In: pd.value_counts(df['category'])
+Out:
+	(18, 25]  5
+	(35, 60]  3
+	(25, 35]  3
+	(60, 100] 1
+
+Note: If an integer is passed as no. of bins it will compute equal-length bins based on the minimum and maximum values in the data.
+
+One-hot encoding-
+df['fuel'] = ['gas', 'diesel', 'gas']
+In: pd.get_dummies(df['fuel'])
+Out: 
+		gas   diesel
+	0	 1		0
+	1	 0		1
+	2	 1		0
+Use drop_first=True to prevent the dummy variable trap
+
+For encoding multiple columns at a time -
+df_new = pd.get_dummies(df_old, columns=['col1', 'col2', 'col3']
+
+# To display all the rows and columns
+pd.set_option("display.max_columns", None)
+pd.set_option("display.max_rows", None)
+
+GroupBy- split-apply-combine
+df.groupby('key').agg()
+As with the GroupBy object, no computation is done until we call some aggregate on the object.
+
+df.groupby('key')['col'] is equivalent to df['col'].groupby(df['key']) # column indexing of GroupBy object
+
+Aggregate-
+df.groupby('key').aggregate(['min', 'max', np.median])
+                 .aggreagate({'col1': 'min',
+							  'col2': 'max'})
+				 .aggreagate({'Average': np.mean,
+							  'Sum': np.sum})
+
+Filter- filter() allows you to drop data based on the group properties.
+df.groupby('key').filter(filter_func)
+
+Transform- transform() applies a function to each group, then places the results in the appropriate locations
+df.groupby('key').transform(lambda x: )
+
+Apply- apply() splits the object into pieces, invokes the passed function on each piece, then attempts to concatenate the pieces together.
+df.groupby('key').apply(apply_func)
+
+Pivot Tables-
+df.pivot_table(data, index='col', columns='col')
+
+index= /rows= # Column names to group on the rows of the resulting pivot table
+columns= /cols= # Column names to group on the columns of the resulting pivot table
+values= # Column names to aggregate. By default aggregates all numeric columns 
+aggfunc=' ' # Aggregation function or list of functions; 'mean' by default
+margins=True # Add row/column subtotals and grand total, False by default
+margins_name='ALL' 
+fill_value= # Replace missing values in result table
+
+Crosstab- A cross-tabulation is a special case of a pivot table that computes group frequencies
+pd.crosstab(df.col1, df.col2, margins=True)
+
+Note: The first two arguments to crosstab can each either be an array or Series
+
+Vectorized String Operations-
+
+Series.str.
+	len()
+	lower(), upper(), capitalize() # Convert into propercase, title() # Convert each word into propercase
+	swapcase() # Swap the case lower/upper
+	islower(), isupper()
+	isalnum(), isdecimal(), isnumeric(), isalpha(), isdigit(), isspace()
+	strip() # Remove whitespace from both sides rstrip(), lstrip()
+	split(' ', n= ) # pat is whitespace by default and n is no. of splits which is all by default, rsplit()
+	index(' ') # Returns index at which the element is found
+	find(' ') # Returns -1 if element not found
+	count(' ') # Count the number of occurences
+	replace(a, b)
+	startswith(), endswith()
+	cat( , sep=' ', na_rep= , join= ) # Concatenate strings element-wise with optional delimiter(empty string by default), na_rep is the representation for for all missing values
+	get() # Indexing via df.str.get(i) and df.str[i] is similar
+	slice() # df.str.slice(a, b) is equivalent to df.str[a:b]
+	pad(width= , side= , fillchar=' ') # Add whitespace to left, right, or both sides of strings
+	center(width= , fillchar=' ') # Equivalent to pad(side='both')
+	ljust(width= , fillchar=' ') # Pad left/right side of strings, rjust()   
+	repeat(repeats=n) # Repeat values n times
+	partition(' ') # Split the string at first occurence of sep, default is whitespace, rpartition() # Split at last occurence 
+	
+Regular Expressions-
+
+Time Series-
+
+pd.to_datetime()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

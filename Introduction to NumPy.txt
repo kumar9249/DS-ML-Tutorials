@@ -1,0 +1,543 @@
+Introduction to NumPy
+
+import numpy as np
+
+Integer array-
+In: np.array([1, 4, 2, 5, 3])
+Out: array([1, 4, 2, 5, 3])
+
+These are fixed-type arrays. If types do not match, NumPy will upcast if possible.
+
+In: np.array([1, 2, 3, 4], dtype='float32') 
+Out: array([ 1., 2., 3., 4.], dtype=float32)
+# dtype explicitly sets the data type of the resulting array using a string dtype='float32'or using the associated numpy object np.int16
+
+In: np.arange(0, 20, 2)
+Out: array([ 0, 2, 4, 6, 8, 10, 12, 14, 16, 18])
+# Starting at 0, ending at 20, stepping by 2
+
+# Create an array of five values evenly spaced between 0 and 1
+In: np.linspace(0, 1, 5)
+Out: array([ 0. , 0.25, 0.5 , 0.75, 1. ])
+
+Random-
+			
+np.random.seed(0)   | same random arrays are generated each time this code is run
+np.random.random	| Draw random numbers from 0 to 1
+np.random.randint   | Draw random integers from a given low(inclusive)-to-high(exclusive) range
+np.random.rand      | Draw samples from a uniform distribution with values between 0 and 1
+np.random.uniform   | Draw samples from a uniform [0, 1) distribution
+np.random.randn     | Draw samples from a standard normal distribution with mean 0 and standard deviation 1 
+np.random.normal    | Draw samples from a normal (Gaussian) distribution
+np.random.binomial  | Draw samples from a binomial distribution
+np.random.beta      | Draw samples from a beta distribution
+np.random.chisquare | Draw samples from a chi-square distribution
+np.random.gamma     | Draw samples from a gamma distribution
+
+
+Note: The shape of array can be specified by size=( , ) parameter. 
+
+Array Attributes-
+x1 = np.random.randint(10, size=6) # One-dimensional array
+x2 = np.random.randint(10, size=(3, 4)) # Two-dimensional array
+x3 = np.random.randint(10, size=(3, 4, 5)) # Three-dimensional array
+
+x3.ndim: 3
+x3.shape: (3, 4, 5)
+x3.size: 60
+x3.dtype: int64
+
+Array Indexing-
+In: x1
+Out: array([5, 0, 3, 3, 7, 9])
+In: x1[0]
+Out: 5
+In: x1[4]
+Out: 7
+
+To index from the end of the array, you can use negative indices:
+In: x1[-1]
+Out: 9
+
+In a multidimensional array, you access items using a comma-separated tuple of indices:
+In: x2
+Out: array([[3, 5, 2, 4],
+            [7, 6, 8, 8],
+            [1, 6, 7, 7]])
+In: x2[0, 0]
+Out: 3
+In: x2[2, -1]
+Out: 7
+You can also modify values using any of the above index notation:
+In: x2[0, 0] = 12
+    x2
+Out: array([[12, 5, 2, 4],
+            [ 7, 6, 8, 8],
+            [ 1, 6, 7, 7]])
+			
+Array Slicing-
+x[start:stop:step]
+If any of these are unspecified, they default to the values start=0, stop=size of dimension, step=1.
+
+One-dimensional subarrays-
+In: x = np.arange(10)
+    x
+Out: array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+In: x[:5] # first five elements
+Out: array([0, 1, 2, 3, 4])
+In: x[5:] # elements after index 5
+Out: array([5, 6, 7, 8, 9])
+In: x[4:7] # middle subarray
+Out: array([4, 5, 6])
+In: x[::2] # every other element
+Out: array([0, 2, 4, 6, 8])
+In: x[1::2] # every other element, starting at index 1
+Out: array([1, 3, 5, 7, 9])
+In: x[::-1] # all elements, reversed
+Out: array([9, 8, 7, 6, 5, 4, 3, 2, 1, 0])
+In: x[5::-2] # reversed every other from index 5
+Out: array([5, 3, 1])
+
+Multi-dimensional subarrays-
+In: x2
+Out: array([[12, 5, 2, 4],
+            [ 7, 6, 8, 8],
+            [ 1, 6, 7, 7]])
+In: x2[:2, :3] # two rows, three columns
+Out: array([[12, 5, 2],
+            [ 7, 6, 8]])
+In: x2[:3, ::2] # all rows, every other column
+Out: array([[12, 2],
+            [ 7, 8],
+            [ 1, 7]])
+
+Accessing Rows and Columns-
+In: print(x2[:, 0]) # first column of x2
+Out: [12 7 1]
+In: print(x2[0, :]) # first row of x2
+Out: [12 5 2 4]
+
+Note: Array slices return views rather than copies of the array data unlike python list slicing.
+
+Creating copy of an array-
+In: sub_array = x2[:2, :2].copy()
+    print(sub_array)
+Out: array([[12, 5],
+            [ 7, 6]])
+
+Reshaping of an array-
+# put the numbers 1 through 9 in a 3×3 grid
+In: grid = np.arange(1, 10).reshape((3, 3))
+    print(grid)
+Out: [[1 2 3],
+      [4 5 6],
+      [7 8 9]]
+
+In: x = np.array([1, 2, 3])
+    x.reshape((1, 3)) # row vector via reshape
+Out: array([[1, 2, 3]])
+x[np.newaxis, :] # row vector via newaxis
+
+x.reshape((3, 1)) # column vector via reshape
+Out: array([[1],
+            [2],
+            [3]])
+x[:, np.newaxis] # column vector via newaxis
+
+Concatenation of arrays-
+In: x = np.array([1, 2, 3])
+    y = np.array([3, 2, 1])
+    np.concatenate([x, y], axis=1)
+Out: array([1, 2, 3, 3, 2, 1])
+# You can also concatenate more than two arrays at once.
+
+In: x = np.array([1, 2, 3])
+    grid = np.array([[9, 8, 7],
+                     [6, 5, 4]])
+    y = np.array([[99],
+	              [99]])
+
+np.vstack([x, grid]) # vertically stack the arrays
+Out: array([[1, 2, 3],
+            [9, 8, 7],
+	        [6, 5, 4]])
+np.hstack([grid, y]) # horizontally stack the arrays
+Out: array([[ 9, 8, 7, 99],
+	        [ 6, 5, 4, 99]])
+
+Similarly, np.dstack will stack arrays along the third axis.
+
+Splitting of arrays-
+In: x = [1, 2, 3, 99, 99, 3, 2, 1]
+    x1, x2, x3 = np.split(x, [3, 5]) # we pass a list of indices giving the split points.
+    print(x1, x2, x3)
+Out: [1 2 3] [99 99] [3 2 1]
+
+In: grid = np.arange(16).reshape((4, 4))
+    grid
+Out: array([[ 0, 1, 2, 3],
+	        [ 4, 5, 6, 7],
+	        [ 8, 9, 10, 11],
+	        [12, 13, 14, 15]])
+
+In: upper, lower = np.vsplit(grid, [2])
+    print(upper)
+    print(lower)
+Out: [[0 1 2 3]
+      [4 5 6 7]]
+Out: [[ 8 9 10 11]
+      [12 13 14 15]]
+
+In: left, right = np.hsplit(grid, [2])
+    print(left)
+    print(right)
+Out: [[ 0 1]
+      [ 4 5]
+      [ 8 9]
+      [12 13]]
+Out: [[ 2 3]
+      [ 6 7]
+      [10 11]
+      [14 15]]
+
+Similarly, np.dsplit will split arrays along the third axis.
+
+NumPy's UFuncs and Vectorized Operations-
+In: x = np.arange(4)
+    print(x)
+Out: [0 1 2 3]
+
+x + 5 = [5 6 7 8]
+x - 5 = [-5 -4 -3 -2]
+x * 2 = [0 2 4 6]
+x / 2 = [ 0. 0.5 1. 1.5]
+x // 2 = [0 0 1 1]
+-x = [ 0 -1 -2 -3]
+x ** 2 = [0 1 4 9]
+x % 2 = [0 1 0 1]
+
++  | np.add()          | Addition 
+-  | np.subtract()     | Subtraction 
+-  | np.negative()     | Unary negation 
+*  | np.multiply()     | Multiplication 
+/  | np.divide()       | Division 
+// | np.floor_divide() | Floor division 
+** | np.power()        | Exponentiation 
+%  | np.mod()          | Modulus/remainder 
+
+Absolute value- 
+In: x = np.array([-2, -1, 0, 1, 2])
+    np.abs(x) # fabs 
+Out: array([2, 1, 0, 1, 2])
+
+Trignometric functions-
+np.sin(x)
+np.cos(x)
+np.tan(x)
+
+Inverse trignometric functions-
+np.arcsin(x)
+np.arccos(x)
+np.arctan(x)
+
+Exponents-
+np.exp(x) # e^x
+np.exp2(x) # 2^x
+np.power(3, x) # 3^x
+np.sqrt(x) # x^0.5
+np.square(x) # x^2
+
+Logarithms-
+np.log(x) # ln(x)
+np.log2(x) # log2(x)
+np.log10(x) # log10(x)
+
+np.sign(x) # Compute the sign of each element
+np.ceil(x) # Compute the ceiling value of each element
+np.floor(x) # Compute the floor value of each element
+
+np.maximum() # Element-wise maximum. fmax() ignores NaN values
+np.minimum() # Element-wise minimum. fmin() ignores NaN values
+
+Specifying output-
+np.ufunc(, , out=) #  For all ufuncs, you can specify the output by the out= argument.
+
+Aggregations-
+np.reduce() # A reduce repeatedly applies a given operation to the elements of an array until only a single result remains.
+np.accumulate() # An accumulate stores all the intermediate results of the computation.
+
+In: x = np.arange(1, 6)
+    np.add.reduce(x)
+Out: 15
+    np.add.accumulate(x)
+Out: array([ 1, 3, 6, 10, 15])
+
+np.sum(x) or x.sum() or np.nansum(x) # Compute sum of elements
+np.min() # Find minimum value
+np.max() # Find maximum value
+np.prod() # Compute product of elements  
+np.std() # Compute standard deviation	     
+np.var() # Compute variance
+np.mean() # Compute mean of elements
+np.argmin() # Find index location of minimum value
+np.argmax() # Find index of location maximum value
+np.median() # Compute median of elements
+np.percentile(x, 25) # Compute rank-based statistics of elements
+np.any()
+np.all()
+
+Note: You can add NaN(nan) to any aggregate function so that it ignores missing values.
+
+Aggregate functions can also be used for multidimensional arrays-
+In: M = np.random.random((3, 4))
+    print(M)
+Out: [[ 0.8967576 0.03783739 0.75952519 0.06682827]
+      [ 0.8354065 0.99196818 0.19544769 0.43447084]
+      [ 0.66859307 0.15038721 0.37911423 0.6687194]]
+
+In: M.sum()
+Out: 6.0850555667307118
+Aggregation functions take an additional argument specifying the axis along which the aggregate is computed. 
+
+For example, we can find the minimum value within each column by specifying axis=0:
+In: M.min(axis=0)
+Out: array([ 0.66859307, 0.03783739, 0.19544769, 0.06682827])
+
+Similarly, we can find the maximum value within each row by specifying axis=1:
+In: M.max(axis=1)
+Out: array([ 0.8967576 , 0.99196818, 0.6687194 ])
+
+Transpose of a matrix-
+x = array([[2, 3, 4],
+           [5, 7, 8],
+           [0, 5, 0]])
+In: y = x.T # Transpose
+    print(y)
+Out: array([[2, 5, 0],
+            [3, 7, 5],
+            [4, 8, 0]])
+
+Dot Product- Used for matrix multiplication
+u = np.array([1, 2])
+v = np.array([3, 1])
+In: x = np.dot(u, v) # u.dot(v)
+    print(x)
+Out: 5
+
+Linear Algebra-
+from numpy.linalg import func
+
+diag  | Return the diagonal elements of a square matrix as a 1D array
+dot   | Matrix multiplication
+trace | Compute the sum of the diagonal elements
+det   | Compute the matrix determinant
+eig   | Compute the eigenvalues and eigenvectors of a square matrix
+inv   | Compute the inverse of a square matrix
+
+Sorting Arrays-
+x = np.array([2, 1, 4, 3, 5])
+
+In: np.sort(x) or x.sort()
+	print(x)
+Out: array([1, 2, 3, 4, 5])
+Note: By default np.sort uses an O[NlogN] , quicksort algorithm.
+
+In: i = np.argsort(x) # returns the indices of sorted elements
+    print(i)
+Out: [1 0 3 2 4] 
+
+Sorting along rows and columns-
+     [[6 3 7 4 6 9]
+x =   [2 6 7 4 3 7]
+      [7 2 5 4 1 7]
+      [5 1 4 0 9 5]]
+
+In: np.sort(x, axis=0)
+Out: array([[2, 1, 4, 0, 1, 5],
+            [5, 2, 5, 4, 3, 7],
+			[6, 3, 7, 4, 6, 7],
+            [7, 6, 7, 4, 9, 9]])
+In: np.sort(x, axis=1)
+Out: array([[3, 4, 6, 6, 7, 9],
+		    [2, 3, 4, 6, 7, 7],
+		    [1, 2, 4, 5, 7, 7],
+		    [0, 1, 4, 5, 5, 9]])
+
+Partitioning- 
+np.partition() function takes an array and a number K; the result is a new array with the smallest
+K values to the left of the partition, and the remaining values to the right, in arbitrary order.
+
+In: x = np.array([7, 2, 3, 1, 6, 5, 4])
+    np.partition(x, 3)
+Out: array([2, 1, 3, 4, 6, 5, 7])
+
+In: np.partition(x, 2, axis=1)
+Out: array([[3, 4, 6, 7, 6, 9],
+            [2, 3, 4, 7, 6, 7],
+			[1, 2, 4, 5, 7, 7],
+			[0, 1, 4, 5, 9, 5]])
+
+Broadcasting-
+
+Example 1 -
+M = np.ones((2, 3))
+a = np.arange(3)
+
+The shapes of the arrays are:
+M.shape = (2, 3)
+a.shape = (3,)
+We see by rule 1 that the array a has fewer dimensions, so we pad it on the left with ones:
+M.shape -> (2, 3)
+a.shape -> (1, 3)
+By rule 2, we now see that the first dimension disagrees, so we stretch this dimension to match:
+M.shape -> (2, 3)
+a.shape -> (2, 3)
+
+In: M + a
+Out: array([[ 1., 2., 3.],
+           [ 1., 2., 3.]])
+
+Example 2 - 
+a = np.arange(3).reshape((3, 1))
+b = np.arange(3)
+
+The shapes of the arrays are:
+a.shape = (3, 1)
+b.shape = (3,)
+Rule 1 says we must pad the shape of b with ones:
+a.shape -> (3, 1)
+b.shape -> (1, 3)
+And rule 2 tells us that we upgrade each of these ones to match the corresponding size of the other array:
+a.shape -> (3, 3)
+b.shape -> (3, 3)
+Because the result matches, these shapes are compatible.
+
+In: a + b
+Out: array([[0, 1, 2],
+            [1, 2, 3],
+            [2, 3, 4]])
+
+Example 3 - 
+M = np.ones((3, 2))
+a = np.arange(3)
+
+The shapes of the arrays are:
+M.shape = (3, 2)
+a.shape = (3,)
+Again, rule 1 tells us that we must pad the shape of a with ones:
+M.shape -> (3, 2)
+a.shape -> (1, 3)
+By rule 2, the first dimension of a is stretched to match that of M:
+M.shape -> (3, 2)
+a.shape -> (3, 3)
+The final shapes do not match, so these two arrays are incompatible. 
+
+In: M+a
+Out: ValueError
+
+Comparison Operators as ufuncs-
+x = np.array([1, 2, 3, 4, 5])
+
+In: x < 3 # less than
+Out: array([ True, True, False, False, False], dtype=bool)
+In: x > 3 # greater than
+Out: array([False, False, False, True, True], dtype=bool)
+In: x <= 3 # less than or equal
+Out: array([ True, True, True, False, False], dtype=bool)
+In: x >= 3 # greater than or equal
+Out: array([False, False, True, True, True], dtype=bool)
+In: x != 3 # not equal
+Out: array([ True, True, False, True, True], dtype=bool)
+In: x == 3 # equal
+Out: array([False, False, True, False, False], dtype=bool)
+In: (2 * x) == (x ** 2)
+Out: array([False, True, False, False, False], dtype=bool)
+
+== | np.equal()
+!= | np.not_equal()
+<  | np.less()
+<= | np.less_equal()
+>  | np.greater()
+>= | np.greater_equal()
+
+Boolean Operators-
+&  | np.bitwise_and()
+|  | np.bitwise_or()
+^  | np.bitwise_xor()
+~  | np.bitwise_not()
+
+Counting entries-
+    [[5 1 3 3]
+x =  [7 9 3 5]
+     [2 4 7 6]]
+
+In: np.sum(x<6) # How many values less than 6?
+Out: 8
+In: np.sum(x<6, axis=1) # How many values less than 6 in each row?
+Out: array([4, 2, 2])
+In: np.sum(x<6, axis=0) # How many values less than 6 in each column?
+Out: array([2, 2, 2, 2])
+In: np.any(x>7)
+Out: False
+In: np.all(x>0)
+Out: True
+
+Boolean Masking-
+In: x<5
+Out: array([[False, True, True, True],
+            [False, False, True, False],
+            [ True, True, False, False]], dtype=bool)
+
+In: x[x<5] # masking operation
+Out: array([1, 3, 3, 3, 2, 4])
+
+Fancy Indexing-
+x = [51 92 14 71 60 20 82 86 74 74]
+
+In: [x[3], x[7], x[2]]
+In: ind = [3, 7, 4]
+    x[ind]
+Out: [71, 86, 14]
+
+In: ind = np.array([[3, 7],
+                    [4, 5]])
+    x[ind]
+Out: array([[71, 86],
+            [60, 20]])
+			
+x = array([[ 0, 1, 2, 3],
+           [ 4, 5, 6, 7],
+           [ 8, 9, 10, 11]])
+
+In: row = np.array([0, 1, 2])
+    col = np.array([2, 1, 3])
+    x[row, col]
+Out: array([ 2, 5, 11])
+
+Structured Arrays-
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
